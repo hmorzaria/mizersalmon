@@ -1,0 +1,37 @@
+---
+title: "Multispecies age based model"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(mizersalmon)
+```
+
+
+Data from spreadsheet biological_parameters_fg, saved as mizer_biodata.csv
+Includes age at maturity, initial biomass
+Other data needs to be estimated 
+
+```{r}
+
+data(mizerbiodata)
+
+
+groups.catch <- extract_catch()
+
+# join with biomass, summarise over boxes, so its species, cohort, timestep
+groups_biomass_catch <- groups.catch %>% 
+  left_join(
+    biomass_bySpeciesTimestep, by = c("Code","ts")
+  ) %>% 
+  mutate("Effort" = Catch/Biomass) %>% 
+  rename(Timestep = ts)
+
+```
+
